@@ -71,5 +71,7 @@ def getTradeRecords(tradeType, tradeURL, colHeaders, hsCodes, hsLvl, years, ctyC
     if resp.status_code == 200:
         tradeRecords = resp.json()
     else:
+        print(resp.status_code)
+        print(resp.content)
         tradeRecords = None
     return tradeRecords

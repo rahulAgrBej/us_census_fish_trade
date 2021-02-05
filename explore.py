@@ -36,15 +36,20 @@ tableHeaders = [
     'MONTH'
 ]
 
+portHeaders = [
+    'E_COMMODITY',
+    'PORT',
+    'PORT_NAME',
+    'ALL_VAL_MO',
+    'MONTH'
+]
+
 hsCodes = [
     '03'
 ]
 
 years = [
-    2017,
-    2018,
-    2019,
-    2020
+    2017
 ]
 
 ctyCodes = [
@@ -53,12 +58,20 @@ ctyCodes = [
 
 hsLvl = 'HS2'
 
-
+"""
 tradeData = helpers.getTradeRecords('export', EXPORT_URL, tableHeaders, hsCodes, hsLvl, years, ctyCodes, API_KEY)
 tradesFileFormat = ''
 if tradeData != None:
     tradesFileFormat = helpers.makeCSV(tradeData)
 print(tradesFileFormat)
+"""
+
+portData = helpers.getTradeRecords('export', PORT_EXPORT_URL, portHeaders, hsCodes, hsLvl, years, [], API_KEY)
+portFileFormat = ''
+if portData != None:
+    portFileFormat = helpers.makeCSV(portData)
+print(portFileFormat)
+
 """
 
 stateURL = 'https://api.census.gov/data/timeseries/intltrade/exports/statehs?get=STATE,ALL_VAL_MO,ALL_VAL_YR&time=2013-01'

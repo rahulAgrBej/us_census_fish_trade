@@ -44,6 +44,13 @@ portHeaders = [
     'MONTH'
 ]
 
+stateHeaders = [
+    'E_COMMODITY',
+    'STATE',
+    'ALL_VAL_MO',
+    'MONTH'
+]
+
 hsCodes = [
     '03'
 ]
@@ -64,36 +71,17 @@ tradesFileFormat = ''
 if tradeData != None:
     tradesFileFormat = helpers.makeCSV(tradeData)
 print(tradesFileFormat)
-"""
+
 
 portData = helpers.getTradeRecords('export', PORT_EXPORT_URL, portHeaders, hsCodes, hsLvl, years, [], API_KEY)
 portFileFormat = ''
 if portData != None:
     portFileFormat = helpers.makeCSV(portData)
 print(portFileFormat)
-
 """
 
-stateURL = 'https://api.census.gov/data/timeseries/intltrade/exports/statehs?get=STATE,ALL_VAL_MO,ALL_VAL_YR&time=2013-01'
-
-stateURL = stateURL +'&key=' + API_KEY
-
-stateResp = requests.get(stateURL)
-print(stateResp.status_code)
-if stateResp.status_code == 200:
-    stateData = stateResp.json()
-    print(makeCSV(stateData))
-else:
-    print(stateResp.status_code)
-    print(stateResp.content)
-
-portURL = 'https://api.census.gov/data/timeseries/intltrade/imports/porths?get=PORT,PORT_NAME,GEN_VAL_MO,GEN_VAL_YR&time=2013-06'
-portURL = portURL + '&key=' + API_KEY
-portResp = requests.get(portURL)
-print(portResp.status_code)
-if portResp.status_code == 200:
-    portData = portResp.json()
-    print(makeCSV(portData))
-else:
-    print(portResp.content)
-"""
+stateData = helpers.getTradeRecords('export', STATE_EXPORT_URL, stateHeaders, hsCodes, hsLvl, years, [], API_KEY)
+stateFileFormat = ''
+if stateData != None:
+    stateFileFormat = helpers.makeCSV(stateData)
+print(stateFileFormat)

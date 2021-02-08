@@ -1,4 +1,6 @@
 census_api_key.txt
 testing/
+tradeDataRecords/
 Guide\ to\ International\ Trade\ Datasets.pdf
 .DS_Store
+__pycache__/

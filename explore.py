@@ -26,13 +26,25 @@ testCountryURL = 'https://api.census.gov/data/timeseries/intltrade/exports/state
 # make sure there are no extra characters in key
 API_KEY = API_KEY.rstrip('\n')
 
-tableHeaders = [
+tableHeadersExport = [
     'E_COMMODITY',
-    'CTY_CODE',
-    'CTY_NAME',
+    #'CTY_CODE',
+    #'CTY_NAME',
     'ALL_VAL_MO',
-    'SUMMARY_LVL',
+    #'SUMMARY_LVL',
+    'DF',
+    #'AIR_VAL_MO', # air value
+    #'AIR_WGT_MO', # air weight value
+    #'VES_VAL_MO', # vessel value
+    #'CNT_VAL_MO', # containerized vessel value
     'MONTH'
+]
+
+tableHeadersImport = [
+    'I_COMMODITY',
+    'GEN_VAL_MO',
+    'MONTH',
+    #'DF'
 ]
 
 portHeaders = [
@@ -40,6 +52,7 @@ portHeaders = [
     'PORT',
     'PORT_NAME',
     'ALL_VAL_MO',
+    #'DF',
     'MONTH'
 ]
 
@@ -47,6 +60,7 @@ stateHeaders = [
     'E_COMMODITY',
     'STATE',
     'ALL_VAL_MO',
+    #'DF',
     'MONTH'
 ]
 
@@ -59,19 +73,37 @@ years = [
 ]
 
 ctyCodes = [
-    1220
+    #1220
 ]
 
 hsLvl = 'HS2'
 
-"""
-# INTL trade data example
-tradeData = helpers.getTradeRecords('export', EXPORT_URL, tableHeaders, hsCodes, hsLvl, years, ctyCodes, API_KEY)
-tradesFileFormat = ''
-if tradeData != None:
-    tradesFileFormat = helpers.makeCSV(tradeData)
-print(tradesFileFormat)
 
+# INTL and Domestic export trades
+exports = helpers.getTradeRecords('export', EXPORT_URL, tableHeadersExport, hsCodes, hsLvl, years, ctyCodes, API_KEY)
+exportFile = ''
+if exports != None:
+    exportFile = helpers.makeCSV(exports)
+print('retrieved exports')
+
+# INTL and Domestic import trades
+imports = helpers.getTradeRecords('import', IMPORT_URL, tableHeadersImport, hsCodes, hsLvl, years, ctyCodes, API_KEY)
+importFile = ''
+if imports != None:
+    importFile = helpers.makeCSV(imports)
+print('retrieved imports')
+
+exportFilePath = 'exports2017.csv'
+exportF = open(exportFilePath, 'w')
+exportF.write(exportFile)
+exportF.close()
+
+importFilePath = 'imports2017.csv'
+importF = open(importFilePath, 'w')
+importF.write(importFile)
+importF.close()
+
+""" 
 # PORT trade data example
 portData = helpers.getTradeRecords('export', PORT_EXPORT_URL, portHeaders, hsCodes, hsLvl, years, [], API_KEY)
 portFileFormat = ''
@@ -79,16 +111,18 @@ if portData != None:
     portFileFormat = helpers.makeCSV(portData)
 print(portFileFormat)
 
+
 # STATE trade data example
 stateData = helpers.getTradeRecords('export', STATE_EXPORT_URL, stateHeaders, hsCodes, hsLvl, years, [], API_KEY)
 stateFileFormat = ''
 if stateData != None:
     stateFileFormat = helpers.makeCSV(stateData)
 print(stateFileFormat)
-"""
+
 
 QTY1_URL = 'https://api.census.gov/data/timeseries/intltrade/exports/hs?get=E_COMMODITY,E_COMMODITY_LDESC,UNIT_QY1,UNIT_QY2,ALL_VAL_MO,QTY_1_MO,QTY_1_MO_FLAG,QTY_2_MO,QTY_2_MO_FLAG&YEAR=2015&E_COMMODITY=0303240000'
 QTY1_URL = QTY1_URL + '&key=' + API_KEY
 q1Resp = requests.get(QTY1_URL)
 print(q1Resp.status_code)
 print(helpers.makeCSV(q1Resp.json()))
+""" 

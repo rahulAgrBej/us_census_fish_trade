@@ -8,6 +8,7 @@ def makeCSV(data):
         for cell in row:
             csvStr += (str(cell)).replace(',', '')
             csvStr += ','
+        csvStr = csvStr[:-1]
         csvStr += '\n'
     
     return csvStr

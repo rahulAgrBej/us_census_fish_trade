@@ -42,14 +42,21 @@ dataFormat.aggTransport <- function(fp) {
   return(aggregateTable)
 }
 
-fp20 <- '../tradeDataRecords/imports/importCountries2020.csv'
-fp19 <- '../tradeDataRecords/imports/importCountries2019.csv'
-fp18 <- '../tradeDataRecords/imports/importCountries2018.csv'
-fp17 <- '../tradeDataRecords/imports/importCountries2017.csv'
-fp16 <- '../tradeDataRecords/imports/importCountries2016.csv'
-fp15 <- '../tradeDataRecords/imports/importCountries2015.csv'
-fp14 <- '../tradeDataRecords/imports/importCountries2014.csv'
-fp13 <- '../tradeDataRecords/imports/importCountries2013.csv'
-transport20 <- dataFormat.aggTransport(fp20)
+dataFormat.aggYears <- function(fpStart, startYr) {
+  
+  transportData <- data.frame()
+  
+  for (itr in 1:8) {
+    fp <- paste(fpStart, toString(startYr), sep='')
+    fp <- paste(fp, '.csv', sep='')
+    startYr <- startYr + 1
+    
+    transportDataYr <- dataFormat.aggTransport(fp)
+    transportData <- rbind(transportData, transportDataYr)
+  }
+  
+  return(transportData)
+}
 
+tradeTransport <- dataFormat.aggYears('../tradeDataRecords/imports/importCountries', 2013)
   

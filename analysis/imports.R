@@ -10,14 +10,14 @@ dataFormat.addTypeCol <- function(tableIn, colName) {
 }
 
 # function that gets all transport data and totals for a table
-dataFormat.aggTransport <- function(fp) {
+dataFormat.aggTransport <- function(fp, subj) {
   
   imports <- read_csv(fp)
   
   # Get total imports for the year
   imports <- imports %>%
     filter(
-      str_detect(CTY_NAME, 'TOTAL FOR ALL COUNTRIES')
+      str_detect(CTY_NAME, subj)
     )
   
   # turning year and month into nums
@@ -27,7 +27,8 @@ dataFormat.aggTransport <- function(fp) {
   # Get separate tables for each type of transport
   
   # Totals table
-  totals <- subset(imports, select=c(GEN_VAL_MO, MONTH, YEAR))
+  imports$TOTALS <- imports$AIR_WGT_MO + imports$VES_WGT_MO + imports$CNT_WGT_MO
+  totals <- subset(imports, select=c(TOTALS, MONTH, YEAR))
   totals <- dataFormat.addTypeCol(totals, 'TOTALS')
   
   # Gross Weight in KGs of shipments made by AIR
@@ -46,7 +47,7 @@ dataFormat.aggTransport <- function(fp) {
   return(aggregateTable)
 }
 
-dataFormat.aggYears <- function(fpStart, startYr) {
+dataFormat.aggYears <- function(fpStart, startYr, subj) {
   
   transportData <- data.frame()
   
@@ -55,17 +56,37 @@ dataFormat.aggYears <- function(fpStart, startYr) {
     fp <- paste(fp, '.csv', sep='')
     startYr <- startYr + 1
     
-    transportDataYr <- dataFormat.aggTransport(fp)
+    transportDataYr <- dataFormat.aggTransport(fp, subj)
     transportData <- rbind(transportData, transportDataYr)
   }
   
   return(transportData)
 }
 
-tradeTransport <- dataFormat.aggYears('../tradeDataRecords/imports/importCountries', 2013)
+tradeTransport <- dataFormat.aggYears('../tradeDataRecords/imports/importCountries', 2013, 'TOTAL FOR ALL COUNTRIES')
+airTransport <- tradeTransport %>%
+  filter(
+    str_detect(TYPE, 'AIR WGT')
+  )
+cntTransport <- tradeTransport %>%
+  filter(
+    str_detect(TYPE, 'CONTAINER WGT')
+  )
+vesTransport <- tradeTransport %>%
+  filter(
+    str_detect(TYPE, 'WATER WGT')
+  )
+
+totalTransport <- tradeTransport %>%
+  filter(
+    str_detect(TYPE, 'TOTALS')
+  )
 
 p <- ggplot() +
-  geom_line(data=tradeTransport, aes(MONTH, COUNTS)) +
+  geom_line(data=airTransport, aes(MONTH, COUNTS), color='red') +
+  geom_line(data=vesTransport, aes(MONTH, COUNTS), color='blue') +
+  geom_line(data=cntTransport, aes(MONTH, COUNTS), color='black') +
+  geom_line(data=totalTransport, aes(MONTH, COUNTS), color='purple') +
   scale_x_continuous(breaks=seq(1, 96, by=1)) +
   facet_grid(TYPE~YEAR, scales='free_y')
 plot(p)

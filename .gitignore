@@ -6,3 +6,5 @@ Guide\ to\ International\ Trade\ Datasets.pdf
 __pycache__/
 .Rproj.user
 analysis/analysis.Rproj
+analysis/.RData
+analysis/.Rhistory

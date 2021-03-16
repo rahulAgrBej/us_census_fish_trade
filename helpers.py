@@ -1,6 +1,15 @@
 import requests
 import json
 
+def filterData(data, hsLvl, hsCode):
+    filteredData = []
+
+    for row in data:
+        if str(row[0])[:hsLvl] == hsCode:
+            filteredData.append(row)
+    
+    return filteredData
+
 def makeCSV(data):
     csvStr = ''
 
@@ -65,6 +74,7 @@ def getTradeRecords(tradeType, tradeURL, colHeaders, hsCodes, hsLvl, years, ctyC
     fullURL = fullURL + '&' + buildHS_Codes(tradeType, hsCodes, hsLvl)
     fullURL = fullURL + '&' + buildYears(years)
     fullURL = fullURL + '&' + buildCtyCodes(ctyCodes)
+    #fullURL = fullURL + '&' + 'MONTH=01'
     fullURL = fullURL + '&key=' + apiKey
 
     resp = requests.get(fullURL)
@@ -76,3 +86,22 @@ def getTradeRecords(tradeType, tradeURL, colHeaders, hsCodes, hsLvl, years, ctyC
         print(resp.content)
         tradeRecords = None
     return tradeRecords
+
+def formatCountryCodes(inFP, outFP):
+    f = open(inFP, 'r')
+    lines = f.readlines()
+    f.close()
+
+    codes = []
+
+    for line in lines:
+        codes.append(line[:4])
+    
+    f = open(outFP, 'w')
+    f.write('code,\n')
+    for code in codes:
+        if code != codes[-1]:
+            f.write(code + ',\n')
+        else:
+            f.write(code)
+    f.close()

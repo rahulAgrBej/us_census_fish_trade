@@ -43,6 +43,8 @@ def buildHS_Codes(tradeType, hsCodes, commLvl):
         commodityType = 'I_COMMODITY'
     
     hsURL = 'COMM_LVL=' + commLvl + '&'
+    hsURL = hsURL + commodityType + '='
+    print(type(hsCodes))
     for hsCode in hsCodes:
         hsURL = hsURL + commodityType + '=' + hsCode + '&'
     hsURL = hsURL[:-1]
@@ -73,12 +75,13 @@ def getTradeRecords(tradeType, tradeURL, colHeaders, hsCodes, hsLvl, years, ctyC
     fullURL = fullURL + buildColHeaders(colHeaders)
     fullURL = fullURL + '&' + buildHS_Codes(tradeType, hsCodes, hsLvl)
     fullURL = fullURL + '&' + buildYears(years)
-    fullURL = fullURL + '&' + buildCtyCodes(ctyCodes)
+    #fullURL = fullURL + '&' + buildCtyCodes(ctyCodes)
     #fullURL = fullURL + '&' + 'MONTH=01'
     fullURL = fullURL + '&key=' + apiKey
 
+    print(fullURL)
     resp = requests.get(fullURL)
-
+    print(f'response {resp.status_code}')
     if resp.status_code == 200:
         tradeRecords = resp.json()
     else:

@@ -1,4 +1,7 @@
-
+import requests
+import json
+import pprint
+import helpers
 
 # international import and export trade URLs
 EXPORT_URL = 'https://api.census.gov/data/timeseries/intltrade/exports/hs'
@@ -17,11 +20,15 @@ tableHeadersExport = [
     'CTY_NAME',
     'ALL_VAL_MO',
     'SUMMARY_LVL',
-    #'DF',
-    #'AIR_VAL_MO', # air value
-    #'AIR_WGT_MO', # air weight value
-    #'VES_VAL_MO', # vessel value
-    #'CNT_VAL_MO', # containerized vessel value
+    'DF',
+    #'QTY_1_MO',
+    #'QTY_2_MO',
+    #'UNIT_QY1',
+    #'UNIT_QY2',
+    'AIR_VAL_MO', # air value
+    'AIR_WGT_MO', # air weight value
+    'VES_VAL_MO', # vessel value
+    'CNT_VAL_MO', # containerized vessel value
     'MONTH'
 ]
 
@@ -82,4 +89,32 @@ for fName in fileNames:
         #print(f'{cells[0]} {hsCode}')
         relevantHScodes.add(str(hsCode))
 
+hsCodes = list(relevantHScodes)
 
+
+"""
+for year in years:
+    print(f'{hsCodes} is being searched for {year}')
+    # INTL and Domestic export trades
+    exports = helpers.getTradeRecords('export', EXPORT_URL, tableHeadersExport, hsCodes, hsLvl, [year], ctyCodes, API_KEY)
+    exportFile = ''
+    if exports != None:
+        exportFile = helpers.makeCSV(exports)
+    print('retrieved exports')
+
+    fOutName = f'hs6_exports_{year}.csv'
+    fOut = open(fOutName, 'w')
+    fOut.write(exportFile)
+    fOut.close()
+"""
+for year in years:
+    imports = helpers.getTradeRecords('import', IMPORT_URL, tableHeadersImport, hsCodes, hsLvl, [year], ctyCodes, API_KEY)
+    importFile = ''
+    if imports != None:
+        importFile = helpers.makeCSV(imports)
+    print('retrieved imports')
+
+    importFilePath = f'hs6_imports_{str(year)}.csv'
+    importF = open(importFilePath, 'w')
+    importF.write(importFile)
+    importF.close()
